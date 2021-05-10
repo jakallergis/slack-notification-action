@@ -1,0 +1,27 @@
+{
+  "name": "slack-notification-action",
+  "version": "1.0.0",
+  "description": "slack-notification-action",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build index.js --license licenses.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jakallergis/slack-notification-action.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jakallergis/slack-notification-action/issues"
+  },
+  "homepage": "https://github.com/jakallergis/slack-notification-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.7",
+    "@actions/github": "^4.0.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.28.5"
+  }
+}

@@ -1,0 +1,40 @@
+name: "Slack Notification Action"
+description: "Send a notification message via Slack"
+inputs:
+  slack-token:
+    description: "Slack app token"
+    required: true
+  slack-channel:
+    description: "The Slack channel to send the message to"
+    required: true
+  slack-title:
+    description: "The message title"
+    required: true
+  slack-message:
+    description: "The message you want to send"
+    required: true
+  slack-message-fields:
+    description: "A JSON string with key-values to display as fields"
+    required: false
+  slack-footer-fields:
+    description: "A JSON string with key-values to display as footer fields"
+    required: false
+  slack-username:
+    description: "Slack Username sending the message"
+    required: true
+  slack-actor:
+    description: "Github username of the person who triggered the action"
+    required: true
+  slack-icon:
+    description: "Slack message Sender icon"
+    required: false
+  slack-message-color:
+    description: "The color on the vertical line of the message"
+    required: true
+    default: "green"
+outputs:
+  time:
+    description: "The time of the message"
+runs:
+  using: node12
+  main: "dist/index.js"
