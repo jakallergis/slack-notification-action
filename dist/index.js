@@ -1,7 +1,7 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 351:
+/***/ 241:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -109,7 +109,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const command_1 = __nccwpck_require__(351);
+const command_1 = __nccwpck_require__(241);
 const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(278);
 const os = __importStar(__nccwpck_require__(87));
@@ -3377,7 +3377,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var deprecation = __nccwpck_require__(481);
+var deprecation = __nccwpck_require__(932);
 var once = _interopDefault(__nccwpck_require__(223));
 
 const logOnce = once(deprecation => console.warn(deprecation));
@@ -3765,7 +3765,7 @@ function removeHook(state, name, method) {
 
 /***/ }),
 
-/***/ 481:
+/***/ 932:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -5891,6 +5891,51 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 694:
+/***/ ((module) => {
+
+module.exports = function fieldsToSection(fields, type) {
+  if (!fields) return;
+
+  const fieldsArray = [];
+  const keys = Object.keys(fields);
+  keys.forEach(k => fields[k] != null && fieldsArray.push(`*${ k }:* ${ fields[k] }`));
+
+  if (fieldsArray.length) {
+    const fieldsKey = type === 'section' ? 'fields' : 'elements';
+    const fieldsValue = fieldsArray.map(text => ({ type: 'mrkdwn', text }));
+    return { type, [fieldsKey]: fieldsValue };
+  }
+}
+
+
+/***/ }),
+
+/***/ 408:
+/***/ ((module) => {
+
+module.exports = function invariant(condition, message, ...args) {
+  if (!condition) {
+    let error
+    if (message === undefined) {
+      error = new Error(
+        "Minified exception occurred; use the non-minified dev environment " +
+          "for the full error message and additional helpful warnings"
+      )
+    } else {
+      let argIndex = 0
+      error = new Error(message.replace(/%s/g, () => args[argIndex++]))
+      error.name = "Internal App issue"
+    }
+
+    error.framesToPop = 1 // we don't care about invariant's own frame
+    throw error
+  }
+}
+
+
+/***/ }),
+
 /***/ 877:
 /***/ ((module) => {
 
@@ -6042,38 +6087,92 @@ module.exports = require("zlib");;
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const core = __nccwpck_require__(186)
-const github = __nccwpck_require__(438)
+const core = __nccwpck_require__(186);
+const github = __nccwpck_require__(438);
+const fetch = __nccwpck_require__(467);
+const invariant = __nccwpck_require__(408);
+const fieldsToSection = __nccwpck_require__(694)
 
-try {
-  const token = core.getInput("slack-token")
-  const channel = core.getInput("slack-channel")
-  const title = core.getInput("slack-title")
-  const message = core.getInput("slack-message")
-  const messageFields = core.getInput("slack-message-fields")
-  const footerFields = core.getInput("slack-footer-fields")
-  const username = core.getInput("slack-username")
-  const actor = core.getInput("slack-actor")
-  const icon = core.getInput("slack-icon")
-  const messageColor = core.getInput("slack-message-color")
-  const payload = JSON.stringify(github.context.payload, null, 2)
-  console.log({
-    token,
+async function main() {
+  const url = 'https://slack.com/api/chat.postMessage';
+  const method = 'POST';
+  const headers = new Headers();
+
+  headers.set('Content-Type', 'application/json');
+  const token = core.getInput('slack-token');
+  invariant(token, 'Slack token not found');
+  headers.set('Authorization', `Bearer ${ token }`);
+
+  const channel = core.getInput('slack-channel');
+  invariant(token, 'Slack channel not found');
+
+  const title = core.getInput('slack-title');
+  const message = core.getInput('slack-message');
+  invariant(message, 'Slack message not found');
+
+  let fieldsSection
+  const messageFields = core.getInput('slack-message-fields');
+  if (messageFields) {
+    try {
+      const parsedFields = JSON.parse(messageFields);
+      fieldsSection = fieldsToSection(parsedFields, "section")
+    } catch (e) {
+      console.log(`[ERROR] Failed to construct message fields: ${ e.message }`);
+    }
+  }
+
+  let fFieldsSection
+  const footerFields = core.getInput('slack-footer-fields');
+  if (footerFields) {
+    try {
+      const parsedFields = JSON.parse(footerFields);
+      fFieldsSection = fieldsToSection(parsedFields, "context")
+    } catch (e) {
+      console.log(`[ERROR] Failed to construct footer fields: ${ e.message }`);
+    }
+  }
+
+  const payload = {
     channel,
-    title,
-    message,
-    messageFields,
-    footerFields,
-    username,
-    actor,
-    icon,
-    messageColor,
-    payload,
-  })
-  core.setOutput("yo", 2)
-} catch (e) {
-  core.setFailed(e.message)
+    text: message,
+    blocks: [
+      title && {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: title,
+          emoji: true
+        }
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: message
+        }
+      },
+      fieldsSection,
+      fieldsSection && fFieldsSection && { type: 'divider' },
+      fFieldsSection
+    ]
+  };
+
+  const body = JSON.stringify(payload)
+  const result = await fetch(url, {method, headers, body})
+  const json = await result.json()
+  const success = json.ok === true
+
+  console.log(`Success: ${success}`)
+
+  // const username = core.getInput('slack-username');
+  // const actor = core.getInput('slack-actor');
+  // const icon = core.getInput('slack-icon');
+  // const messageColor = core.getInput('slack-message-color');
+
+  core.setOutput('success', success);
 }
+
+main().catch(e => core.setFailed(e.message))
 
 })();
 

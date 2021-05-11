@@ -9,7 +9,7 @@ inputs:
     required: true
   slack-title:
     description: "The message title"
-    required: true
+    required: false
   slack-message:
     description: "The message you want to send"
     required: true
@@ -19,22 +19,22 @@ inputs:
   slack-footer-fields:
     description: "A JSON string with key-values to display as footer fields"
     required: false
+# NOT USED YET
   slack-username:
     description: "Slack Username sending the message"
-    required: true
+    required: false
   slack-actor:
     description: "Github username of the person who triggered the action"
-    required: true
+    required: false
   slack-icon:
     description: "Slack message Sender icon"
     required: false
   slack-message-color:
     description: "The color on the vertical line of the message"
-    required: true
-    default: "green"
+    required: false
 outputs:
-  time:
-    description: "The time of the message"
+  success:
+    description: "Whether or not the message was sent"
 runs:
   using: node12
   main: "dist/index.js"
