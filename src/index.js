@@ -7,7 +7,7 @@ const fieldsToSection = require("./utils/fieldsToSection")
 async function main() {
   const url = 'https://slack.com/api/chat.postMessage';
   const method = 'POST';
-  const headers = new fetch.Headers();
+  const headers = new Map();
 
   headers.set('Content-Type', 'application/json');
   const token = core.getInput('slack-token');
