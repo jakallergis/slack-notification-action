@@ -5,9 +5,13 @@ const invariant = require('./utils/invariant');
 const fieldsToSection = require('./utils/fieldsToSection');
 
 async function main() {
-  const url = 'https://slack.com/api/chat.postMessage';
+  const postMessage = 'https://slack.com/api/chat.postMessage';
+  const updateMessage = 'https://slack.com/api/chat.update';
   const method = 'POST';
   const headers = new fetch.Headers();
+
+  const message_id = core.getInput('slack-message-id');
+  const url = message_id ? updateMessage : postMessage;
 
   headers.set('Content-Type', 'application/json');
   const token = core.getInput('slack-token');
@@ -66,18 +70,16 @@ async function main() {
     ]
   };
 
+  if (message_id) payload.ts = message_id
+
   const body = JSON.stringify(payload);
   const result = await fetch(url, { method, headers, body });
   const json = await result.json();
   const success = json.ok === true;
-
-  console.log(`Success: ${ success }`);
-
-  // const username = core.getInput('slack-username');
-  // const actor = core.getInput('slack-actor');
-  // const icon = core.getInput('slack-icon');
+  const messageID = json.ts;
 
   core.setOutput('success', success);
+  core.setOutput('message_id', messageID);
 }
 
 main().catch(e => core.setFailed(e.message));

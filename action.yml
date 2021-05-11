@@ -32,9 +32,14 @@ inputs:
   slack-message-color:
     description: "The color on the vertical line of the message"
     required: false
+  slack-message-id:
+    description: "If you want to update a message you need to pass it's id (ts) value"
+    required: false
 outputs:
   success:
     description: "Whether or not the message was sent"
+  message_id:
+    description: "The message id that was sent"
 runs:
   using: node12
   main: "dist/index.js"
