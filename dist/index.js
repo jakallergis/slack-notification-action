@@ -6096,7 +6096,7 @@ const fieldsToSection = __nccwpck_require__(694)
 async function main() {
   const url = 'https://slack.com/api/chat.postMessage';
   const method = 'POST';
-  const headers = new Headers();
+  const headers = new fetch.Headers();
 
   headers.set('Content-Type', 'application/json');
   const token = core.getInput('slack-token');
