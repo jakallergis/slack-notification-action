@@ -2,7 +2,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const fetch = require('node-fetch');
 const invariant = require('./utils/invariant');
-const fieldsToSection = require("./utils/fieldsToSection")
+const fieldsToSection = require('./utils/fieldsToSection');
 
 async function main() {
   const url = 'https://slack.com/api/chat.postMessage';
@@ -21,39 +21,26 @@ async function main() {
   const message = core.getInput('slack-message');
   invariant(message, 'Slack message not found');
 
-  let fieldsSection
+  let fieldsSection;
   const messageFields = core.getInput('slack-message-fields');
   if (messageFields) {
     try {
       const parsedFields = JSON.parse(messageFields);
-      fieldsSection = fieldsToSection(parsedFields, "section")
+      fieldsSection = fieldsToSection(parsedFields, 'section');
     } catch (e) {
       console.log(`[ERROR] Failed to construct message fields: ${ e.message }`);
     }
   }
 
-  let fFieldsSection
-  const footerFields = core.getInput('slack-footer-fields');
-  if (footerFields) {
-    try {
-      const parsedFields = JSON.parse(footerFields);
-      fFieldsSection = fieldsToSection(parsedFields, "context")
-    } catch (e) {
-      console.log(`[ERROR] Failed to construct footer fields: ${ e.message }`);
-    }
-  }
+  const footerMessage = core.getInput('slack-footer');
+  const footer = footerMessage
+    ? { type: 'context', elements: [{ type: 'mrkdwn', text: footerMessage }] }
+    : undefined;
 
-  const color = core.getInput('slack-message-color')
-  const attachments = (fieldsSection ||fieldsSection) ? [
-    {
-      color,
-      elements: [
-        fieldsSection,
-        fieldsSection && fFieldsSection && { type: 'divider' },
-        fFieldsSection
-      ]
-    }
-  ] : undefined
+  const color = core.getInput('slack-message-color');
+  const attachments = footer
+    ? [{ color, blocks: [{ type: 'divider' }, footer] }]
+    : undefined;
 
   const payload = {
     channel,
@@ -74,16 +61,17 @@ async function main() {
           type: 'mrkdwn',
           text: message
         }
-      }
+      },
+      fieldsSection
     ]
   };
 
-  const body = JSON.stringify(payload)
-  const result = await fetch(url, {method, headers, body})
-  const json = await result.json()
-  const success = json.ok === true
+  const body = JSON.stringify(payload);
+  const result = await fetch(url, { method, headers, body });
+  const json = await result.json();
+  const success = json.ok === true;
 
-  console.log(`Success: ${success}`)
+  console.log(`Success: ${ success }`);
 
   // const username = core.getInput('slack-username');
   // const actor = core.getInput('slack-actor');
@@ -92,4 +80,4 @@ async function main() {
   core.setOutput('success', success);
 }
 
-main().catch(e => core.setFailed(e.message))
+main().catch(e => core.setFailed(e.message));
