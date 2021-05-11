@@ -80,6 +80,13 @@ async function main() {
 
   core.setOutput('success', success);
   core.setOutput('message_id', messageID);
+
+  console.log({
+    url,
+    message_id,
+    messageID,
+    result: json
+  })
 }
 
 main().catch(e => core.setFailed(e.message));

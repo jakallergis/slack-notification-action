@@ -16,8 +16,8 @@ inputs:
   slack-message-fields:
     description: "A JSON string with key-values to display as fields"
     required: false
-  slack-footer-fields:
-    description: "A JSON string with key-values to display as footer fields"
+  slack-footer:
+    description: "A string with key-values to display as footer"
     required: false
   slack-message-color:
     description: "The color on the vertical line of the message"
