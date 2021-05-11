@@ -43,9 +43,22 @@ async function main() {
     }
   }
 
+  const color = core.getInput('slack-message-color')
+  const attachments = (fieldsSection ||fieldsSection) ? [
+    {
+      color,
+      elements: [
+        fieldsSection,
+        fieldsSection && fFieldsSection && { type: 'divider' },
+        fFieldsSection
+      ]
+    }
+  ] : undefined
+
   const payload = {
     channel,
     text: message,
+    attachments,
     blocks: [
       title && {
         type: 'header',
@@ -61,10 +74,7 @@ async function main() {
           type: 'mrkdwn',
           text: message
         }
-      },
-      fieldsSection,
-      fieldsSection && fFieldsSection && { type: 'divider' },
-      fFieldsSection
+      }
     ]
   };
 
@@ -78,7 +88,6 @@ async function main() {
   // const username = core.getInput('slack-username');
   // const actor = core.getInput('slack-actor');
   // const icon = core.getInput('slack-icon');
-  // const messageColor = core.getInput('slack-message-color');
 
   core.setOutput('success', success);
 }
