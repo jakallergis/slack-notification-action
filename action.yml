@@ -19,6 +19,12 @@ inputs:
   slack-footer-fields:
     description: "A JSON string with key-values to display as footer fields"
     required: false
+  slack-message-color:
+    description: "The color on the vertical line of the message"
+    required: false
+  slack-message-id:
+    description: "If you want to update a message you need to pass it's id (ts) value"
+    required: false
 # NOT USED YET
   slack-username:
     description: "Slack Username sending the message"
@@ -28,12 +34,6 @@ inputs:
     required: false
   slack-icon:
     description: "Slack message Sender icon"
-    required: false
-  slack-message-color:
-    description: "The color on the vertical line of the message"
-    required: false
-  slack-message-id:
-    description: "If you want to update a message you need to pass it's id (ts) value"
     required: false
 outputs:
   success:
