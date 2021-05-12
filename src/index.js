@@ -55,8 +55,7 @@ async function main() {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: title,
-          emoji: true
+          text: title
         }
       },
       {
