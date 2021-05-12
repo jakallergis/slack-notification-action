@@ -6145,7 +6145,7 @@ async function main() {
         type: 'header',
         text: {
           type: 'plain_text',
-          text: title,
+          text: header,
           emoji: true
         }
       },
