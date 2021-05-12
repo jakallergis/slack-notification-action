@@ -52,9 +52,9 @@ async function main() {
     attachments,
     blocks: [
       title && {
-        type: 'header',
+        type: 'section',
         text: {
-          type: 'plain_text',
+          type: 'mrkdwn',
           text: title,
           emoji: true
         }
