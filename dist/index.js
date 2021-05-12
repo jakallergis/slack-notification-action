@@ -6110,6 +6110,7 @@ async function main() {
   const channel = core.getInput('slack-channel');
   invariant(token, 'Slack channel not found');
 
+  const header = core.getInput('slack-header');
   const title = core.getInput('slack-title');
   const message = core.getInput('slack-message');
   invariant(message, 'Slack message not found');
@@ -6140,6 +6141,14 @@ async function main() {
     text: message,
     attachments,
     blocks: [
+      header && {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: title,
+          emoji: true
+        }
+      },
       title && {
         type: 'section',
         text: {

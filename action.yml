@@ -7,6 +7,9 @@ inputs:
   slack-channel:
     description: "The Slack channel to send the message to"
     required: true
+  slack-header:
+    description: "The message header"
+    required: false
   slack-title:
     description: "The message title"
     required: false
