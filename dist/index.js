@@ -6164,7 +6164,7 @@ async function main() {
         }
       },
       fieldsSection
-    ]
+    ].filter(Boolean)
   };
 
   if (message_id) payload.ts = message_id
@@ -6185,8 +6185,7 @@ async function main() {
     url,
     message_id,
     messageID,
-    result: json,
-    payload: JSON.stringify(payload, null, 2)
+    result: json
   })
 }
 
