@@ -98,6 +98,8 @@ async function main() {
     messageID,
     result: json
   })
+
+  invariant(success, "Request failed")
 }
 
 main().catch(e => core.setFailed(e.message));
