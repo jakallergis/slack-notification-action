@@ -6164,7 +6164,7 @@ async function main() {
         }
       },
       fieldsSection
-    ].filter(Boolean)
+    ]
   };
 
   if (message_id) payload.ts = message_id
@@ -6177,9 +6177,6 @@ async function main() {
 
   core.setOutput('success', success);
   core.setOutput('message_id', messageID);
-
-  core.info("PAYLOAD:")
-  core.info(JSON.stringify(payload, null, 2))
 
   console.log({
     url,

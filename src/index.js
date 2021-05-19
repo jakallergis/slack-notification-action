@@ -75,7 +75,7 @@ async function main() {
         }
       },
       fieldsSection
-    ].filter(Boolean)
+    ]
   };
 
   if (message_id) payload.ts = message_id
