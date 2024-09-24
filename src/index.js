@@ -19,7 +19,7 @@ async function main() {
   headers.set('Authorization', `Bearer ${ token }`);
 
   const channel = core.getInput('slack-channel');
-  invariant(token, 'Slack channel not found');
+  invariant(channel, 'Slack channel not found');
 
   const header = core.getInput('slack-header');
   const title = core.getInput('slack-title');
